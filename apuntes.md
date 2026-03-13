@@ -12,8 +12,8 @@ Invariante de clase: condiciones que siempre se deben cumplir.
 
 ## Environment
 DEV  -> Espacio de trabajo para desarrolladores
-QA   -> espacio de testeo, revisiones
-UAT  ->  para el cliente, para probar la funcionalidad
+QA   -> Espacio de testeo, revisiones
+UAT  -> Para que el cliente pruebe la funcionalidad
 PROD ->
 
 ## GIT
@@ -21,3 +21,6 @@ branch: rama de desarrollo de codigo
 merge: unir y resolver conflictos
 push: subir el codigo al repositorio
 
+
+## TODO
+- Tarea ecampus L2 y T3: autobus POO

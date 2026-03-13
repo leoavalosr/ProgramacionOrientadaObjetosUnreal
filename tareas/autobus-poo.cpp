@@ -1,24 +1,18 @@
 #include <iostream>
 using namespace std;
 
-bool enLimiteCombustible(int combustible){
-	bool valido = false;
-	if (combustible>=0 && combustible<=100){
-		valido = true;
-	}
-	return valido;
-}
-
+// https://github.com/toitolucho/Learning-Game-Development-with-POO/tree/main/05%20AutoBus
 
 class AutoBus {
 private:
-	float combustible;
+	double combustible;
 	int pasajeros;
-	int capacidadTanque = 50;
+	int capacidadTanque = 100;
+	int pasajerosBajaron = 0;
 
 public:
 	int asientos;
-	float tarifa;
+	double tarifa;
 
 	// constructores
 	AutoBus(){
@@ -28,59 +22,83 @@ public:
 		pasajeros = 0;
 	}
 	AutoBus(int comb){
-		if (enLimiteCombustible(comb)){
+		if (comb <= capacidadTanque){
 			combustible = comb;
 		} else {
-			cout<<"Combustible maximo 100"<<endl;
+			cout<<"La capacidad maxima es de "<<capacidadTanque<<" litros"<<endl;
 		}
 	}
 	AutoBus(int comb, int asi, float tar){
+		if (comb > capacidadTanque){
+			cout<<"La capacidad maxima es de "<<capacidadTanque<<" litros"<<endl;
+			return;
+		}
 		combustible = comb;
 		asientos = asi;
 		tarifa = tar;
 		pasajeros = 0;
 	}
-	AutoBus(int asi, float tar){
-		combustible = 250;
-		asientos = asi;
-		tarifa = tar;
-		pasajeros = 0;
+
+	bool esCantidadNegativa(double num){
+		return num<0;
 	}
-	// crear un constructor que configure el tamanio y el prcio del bus asumiendo que se tiene 250 combustible y la tarifa de 3
 
 	void imprimir(){
-		cout<<endl;
-		cout<<"Combustible: "<<combustible<<endl;
-		cout<<"Tarifa: "<<tarifa<<endl;
+		cout<<"\n-------------------------------"<<endl;
+		cout<<"INFORMACION DEL BUS"<<endl;
+		cout<<"-------------------------------"<<endl;
 		cout<<"Nro pasajeros: "<<pasajeros<<endl;
-		cout<<"Asientos totales: "<<asientos<<endl;
-		cout<<"Asientos libres: "<<calcularAsientosLibres()<<endl;
+		cout<<"Asientos: "<<asientos<<endl;
+		cout<<"Asientos libres: "<<calcularCantidadAsientosDisponibles()<<endl;
+		cout<<"Tarifa: "<<tarifa<<endl;
+		cout<<"Combustible: "<<combustible<<endl;
+		cout<<"-------------------------------"<<endl;
 	}
 
 	void cargarCombustible(float cantidad){
+		if (esCantidadNegativa(cantidad))
+			return;
 		cout<<"\nCargando combustible..."<<endl;
 		if (combustible+cantidad > capacidadTanque){
-			combustible = capacidadTanque;
-		} else {
-			combustible += cantidad;
+			cantidad = capacidadTanque-combustible;
 		}
+		combustible += cantidad;
+		cout<<cantidad<<" litros recargados"<<endl;
 	}
-
-	void recogerPasajeros(int masPasajeros){
+	void recogerPasajeros(int subenPasajeros){
+		if (esCantidadNegativa(subenPasajeros))
+			return;
 		cout<<"\nRecogiendo pasajeros..."<<endl;
-		if (pasajeros+masPasajeros > asientos){
-			pasajeros = asientos;
-		} else {
-			pasajeros += masPasajeros;
+		int asientosDisponibles = calcularCantidadAsientosDisponibles();
+		if (subenPasajeros > asientosDisponibles){
+			subenPasajeros = asientosDisponibles;
 		}
+		pasajeros += subenPasajeros;
+		cout<<subenPasajeros<<" pasajeros recogidos"<<endl;
 	}
 
-	int calcularAsientosLibres(){
+	int calcularCantidadAsientosDisponibles(){
 		return asientos-pasajeros;
 	}
-
+	bool hayEspacio(){
+		return calcularCantidadAsientosDisponibles() > 0;
+	}
+	bool estaVacio(){
+		return pasajeros==0;
+	}
 	float calcularPagoLLenarTanque(float precio_litro){
 		return precio_litro*(capacidadTanque-combustible);
+	}
+
+	float calcularMontoRecaudado(){
+		return (pasajeros+pasajerosBajaron)*tarifa;
+	}
+
+	void bajarPasajeros(int bajanPasajeros){
+		if (bajanPasajeros > pasajeros)
+			return;
+		pasajeros -= bajanPasajeros;
+		pasajerosBajaron += bajanPasajeros;
 	}
 
 	int getCombustible(){
@@ -89,23 +107,19 @@ public:
 	int getPasajeros(){
 		return pasajeros;
 	}
-
-	void setCombustible(int comb){
-		combustible = comb;
-	}
-	void setPasajeros(int pas){
-		pasajeros = pas;
-	}
-
 };
 
 int main(){
-	AutoBus bus1;
+	AutoBus bus1(50, 40, 2.5);
 	bus1.imprimir();
 
+	bus1.recogerPasajeros(15);
+	cout<<"Hay espacio?: "<<(bus1.hayEspacio() ? "si" : "no")<<endl;
 	bus1.cargarCombustible(20);
-	bus1.recogerPasajeros(2);
-	float costoAPagar = bus1.calcularPagoLLenarTanque(3.5);
+	bus1.cargarCombustible(25);
+	bus1.cargarCombustible(30);
+
+	cout<<"\nMonto recaudado: $"<<bus1.calcularMontoRecaudado()<<endl;
 
 	bus1.imprimir();
 
