@@ -54,10 +54,10 @@ public:
 	void resetTo(char dir){
 		if (dir == 'N'){
 			x = 0;
-			y = -(escenario.alto/2);
+			y = escenario.alto/2;
 		} else if (dir == 'S'){
 			x = 0;
-			y = escenario.alto/2;
+			y = -(escenario.alto/2);
 		} else if (dir == 'E'){
 			x = escenario.ancho/2;
 			y = 0;
