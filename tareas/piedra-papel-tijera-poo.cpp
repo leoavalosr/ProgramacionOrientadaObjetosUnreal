@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <random>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ using namespace std;
 int rondas = 0;
 
 class Player{
-private:
+protected:
 	static int contador;
 	int id;
 
@@ -91,9 +92,24 @@ public:
 };
 int Player::contador = 0;
 
+class PlayerPc : public Player{
+public:
+	PlayerPc(string nom) : Player(nom){};
+
+	void seleccionar(){
+		// Jugada aleatoria
+		random_device rd;  // semilla aleatoria
+		mt19937 gen(rd()); // generador Mersenne Twister
+		uniform_int_distribution<> dist(1, 3); // rango
+		
+		int numero = dist(gen);
+		setJugada(numero);
+	}
+};
+
 int main(){
 	Player j1("SubZero");
-	Player j2("Scorpion");
+	PlayerPc j2("Scorpion");
 	Player j3("Reptile");
 
 	cout<<"Cantidad de rondas: ";
